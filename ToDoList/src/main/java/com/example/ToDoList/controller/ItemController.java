@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.ToDoList.model.Item;
@@ -30,6 +31,20 @@ public class ItemController {
         repository.save(item);
         // redirige de nuevo a la uta principal para ver la lista actual
         return "redirect:/";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable("id") Long id) {
+        repository.deleteById(id);
+        return "redirect:/";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable("id") Long id, Model model) {
+        Item item = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID invalido"));
+        model.addAttribute("items", repository.findAll());
+        model.addAttribute("item", item); // Pasamos el item con sus datos al formulario
+        return "index";
     }
 
     
